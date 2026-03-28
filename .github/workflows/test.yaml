@@ -53,7 +53,7 @@ jobs:
           - preset: ROCm
             container: rocm/dev-ubuntu-22.04:7.2.1
             extra-packages: rocm-libs
-            flags: '-DAMDGPU_TARGETS=gfx1010 -DCMAKE_PREFIX_PATH=/opt/rocm'
+            flags: '-DGPU_TARGETS=gfx1010 -DCMAKE_PREFIX_PATH=/opt/rocm'
           - preset: Vulkan
             container: ubuntu:22.04
             extra-packages: >
@@ -126,7 +126,7 @@ jobs:
             cuda-version: '13.0'
           - preset: ROCm
             install: https://download.amd.com/developer/eula/rocm-hub/AMD-Software-PRO-Edition-24.Q4-WinSvr2022-For-HIP.exe
-            flags: '-DAMDGPU_TARGETS=gfx1010 -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_FLAGS="-parallel-jobs=4 -Wno-ignored-attributes -Wno-deprecated-pragma" -DCMAKE_CXX_FLAGS="-parallel-jobs=4 -Wno-ignored-attributes -Wno-deprecated-pragma"'
+            flags: '-DGPU_TARGETS=gfx1010 -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_FLAGS="-parallel-jobs=4 -Wno-ignored-attributes -Wno-deprecated-pragma" -DCMAKE_CXX_FLAGS="-parallel-jobs=4 -Wno-ignored-attributes -Wno-deprecated-pragma"'
           - preset: Vulkan
             install: https://sdk.lunarg.com/sdk/download/1.4.321.1/windows/vulkansdk-windows-X64-1.4.321.1.exe
           - preset: 'MLX CUDA 13'

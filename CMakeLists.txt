@@ -127,25 +127,38 @@ if(CMAKE_CUDA_COMPILER)
     )
 endif()
 
-set(WINDOWS_AMDGPU_TARGETS_EXCLUDE_REGEX "^gfx(908|90a|1200|1201):xnack[+-]$"
+set(WINDOWS_GPU_TARGETS_EXCLUDE_REGEX "^gfx(908|90a|1200|1201):xnack[+-]$"
     CACHE STRING
-    "Regular expression describing AMDGPU_TARGETS not supported on Windows. Override to force building these targets. Default \"^gfx(908|90a|1200|1201):xnack[+-]$\"."
+    "Regular expression describing GPU_TARGETS not supported on Windows. Override to force building these targets. Default \"^gfx(908|90a|1200|1201):xnack[+-]$\"."
 )
 
 check_language(HIP)
 if(CMAKE_HIP_COMPILER)
     set(HIP_PLATFORM "amd")
 
-    if(NOT AMDGPU_TARGETS)
+    # Accept the old target variable names without passing them through to HIP.
+    if(DEFINED AMDGPU_TARGETS AND NOT DEFINED GPU_TARGETS)
+        set(GPU_TARGETS "${AMDGPU_TARGETS}")
+        unset(AMDGPU_TARGETS CACHE)
+        unset(AMDGPU_TARGETS)
+    endif()
+
+    if(DEFINED WINDOWS_AMDGPU_TARGETS_EXCLUDE_REGEX AND NOT DEFINED WINDOWS_GPU_TARGETS_EXCLUDE_REGEX)
+        set(WINDOWS_GPU_TARGETS_EXCLUDE_REGEX "${WINDOWS_AMDGPU_TARGETS_EXCLUDE_REGEX}")
+        unset(WINDOWS_AMDGPU_TARGETS_EXCLUDE_REGEX CACHE)
+        unset(WINDOWS_AMDGPU_TARGETS_EXCLUDE_REGEX)
+    endif()
+
+    if(NOT GPU_TARGETS)
         find_package(hip REQUIRED)
-        list(FILTER AMDGPU_TARGETS INCLUDE REGEX "^gfx(94[012]|101[02]|1030|110[012]|120[01])$")
+        list(FILTER GPU_TARGETS INCLUDE REGEX "^gfx(94[012]|101[02]|1030|110[012]|120[01])$")
     endif()
 
-    if(WIN32 AND WINDOWS_AMDGPU_TARGETS_EXCLUDE_REGEX)
-        list(FILTER AMDGPU_TARGETS EXCLUDE REGEX ${WINDOWS_AMDGPU_TARGETS_EXCLUDE_REGEX})
+    if(WIN32 AND WINDOWS_GPU_TARGETS_EXCLUDE_REGEX)
+        list(FILTER GPU_TARGETS EXCLUDE REGEX ${WINDOWS_GPU_TARGETS_EXCLUDE_REGEX})
     endif()
 
-    if(AMDGPU_TARGETS)
+    if(GPU_TARGETS)
         find_package(hip REQUIRED)
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ml/backend/ggml/ggml/src/ggml-hip)
         target_include_directories(ggml-hip PRIVATE ${GGML_INCLUDE_DIRS})

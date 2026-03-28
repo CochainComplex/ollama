@@ -28,10 +28,13 @@ if (CXX_IS_HIPCC)
                 " Prefer setting the HIP compiler directly. See README for details.")
     endif()
 else()
-    # Forward (AMD)GPU_TARGETS to CMAKE_HIP_ARCHITECTURES.
-    if(AMDGPU_TARGETS AND NOT GPU_TARGETS)
-        set(GPU_TARGETS ${AMDGPU_TARGETS})
+    # Accept the old target variable name while migrating to GPU_TARGETS.
+    if(DEFINED AMDGPU_TARGETS AND NOT DEFINED GPU_TARGETS)
+        set(GPU_TARGETS "${AMDGPU_TARGETS}")
+        unset(AMDGPU_TARGETS CACHE)
+        unset(AMDGPU_TARGETS)
     endif()
+    # Forward GPU_TARGETS to CMAKE_HIP_ARCHITECTURES.
     if(GPU_TARGETS AND NOT CMAKE_HIP_ARCHITECTURES)
         set(CMAKE_HIP_ARCHITECTURES ${GPU_TARGETS})
     endif()

@@ -16,7 +16,7 @@ OLLAMA_COMMON_BUILD_ARGS="--build-arg=VERSION \
     --build-arg=OLLAMA_FAST_BUILD \
     --build-arg=CUSTOM_CPU_FLAGS \
     --build-arg=GPU_RUNNER_CPU_FLAGS \
-    --build-arg=AMDGPU_TARGETS"
+    --build-arg=GPU_TARGETS"
 
 # Forward local MLX source overrides as Docker build contexts
 if [ -n "${OLLAMA_MLX_SOURCE:-}" ]; then
